@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "113074201271",
+    "project_id": "flufire-001",
+    "storage_bucket": "flufire-001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113074201271:android:d385da5ea279d9567c2332",
+        "android_client_info": {
+          "package_name": "com.example.flufire_sample_001"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxrgNMZt_PXKiUoKXogoLfYlGIy0wSwR0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
