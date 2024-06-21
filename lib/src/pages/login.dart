@@ -1,26 +1,51 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({super.key});
 
-  Future<UserCredential> signInWithGoogle() async {
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  bool _isLoading = false;
+
+  Future<void> signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
     // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+      // Once signed in, return the UserCredential
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -29,11 +54,22 @@ class Login extends StatelessWidget {
       appBar: AppBar(
         title: const Text('로그인'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: signInWithGoogle,
-          child: const Text("구글 로그인"),
-        ),
+      body: Stack(
+        children: [
+          Center(
+            child: ElevatedButton(
+              onPressed: signInWithGoogle,
+              child: const Text("구글 로그인"),
+            ),
+          ),
+          if (_isLoading)
+            const Center(
+              child: SpinKitCircle(
+                color: Colors.blue,
+                size: 50,
+              ),
+            )
+        ],
       ),
     );
   }
