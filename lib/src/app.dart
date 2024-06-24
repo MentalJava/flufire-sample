@@ -14,7 +14,7 @@ class App extends StatelessWidget {
         if (user.hasData) {
           return const Home();
         } else {
-          return const Login();
+          return Login();
         }
       },
     );
