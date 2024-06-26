@@ -4,9 +4,17 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginController extends GetxController {
   var isLoading = false.obs;
-
+  static LoginController get to => Get.find();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  Rx<User?> firebaseUser = Rx<User?>(null);
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  @override
+  void onReady() {
+    super.onReady();
+    firebaseUser.bindStream(auth.authStateChanges());
+  }
 
   Future<void> loginWithGoogle() async {
     isLoading.value = true;
@@ -25,7 +33,7 @@ class LoginController extends GetxController {
 
       await _auth.signInWithCredential(credential);
     } catch (e) {
-      print(e);
+      Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
